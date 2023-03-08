@@ -5,9 +5,13 @@ import 'package:kho_hang_nhat/model/model_category.dart';
 
 import '../../bloc/event_bloc.dart';
 import '../../bloc/product/bloc_category.dart';
+import '../../bloc/product/bloc_fullPrd.dart';
 import '../../bloc/state_bloc.dart';
+import '../../model/model_productMain.dart';
 import '../../styles/init_style.dart';
 import '../../widget/app_bar.dart';
+import '../../widget/loadPage/item_load_page.dart';
+import '../../widget/loadPage/item_loadmore.dart';
 import '../item/product_item.dart';
 
 class ProductScreen extends StatefulWidget {
@@ -22,16 +26,44 @@ class _ProductScreenState extends State<ProductScreen>
   TabController? _tabController;
   TabController? _tabController2;
   int TabCha = 0;
-int id=0;
+String id='';
   int tabCon=0;
 
   String type = 'Bán chạy nhất';
   BlocCategory blocCategory = BlocCategory()..add(GetData());
+  BlocFullPrd blocFullPrd=BlocFullPrd();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  int page = 1;String soft='';
+  ScrollController _controller = ScrollController();
+  Future<void> onRefresh() async {
+    page = 1;
+    blocFullPrd.add(LoadMoreEvent(
+      id: id,
+      page: page,
+      cleanList: true,
+      sort: soft
+    ));
+  }
+
+  loadmore() async {
+    _controller.addListener(() {
+      if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+
+        page++;
+        blocFullPrd.add(LoadMoreEvent(
+          id: id,
+          page: page,
+          loadMore: true,
+          sort: soft
+        ));
+      }
+    });
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     // _tabController = TabController(length: 10, vsync: this);
     // _tabController2 = TabController(length: 5, vsync: this);
   }
@@ -99,12 +131,17 @@ int id=0;
                     TabController(length: model.items!.length, vsync: this);
                 _tabController2 = TabController(
                     length: model.items![TabCha].children!.length, vsync: this);
+                id= model.items![TabCha].children![tabCon].id.toString();
+                // print( model.items![TabCha].children![tabCon].id);
+                onRefresh();
+                loadmore();
                 return TabBar(
                   controller: _tabController,
                   onTap: (value) {
-                  print( model.items![TabCha].children![0].id);
-
                     TabCha = value;
+
+                        tabCon=0;
+
                     _tabController2 = TabController(
                         length: model.items![TabCha].children!.length,
                         vsync: this);
@@ -138,15 +175,19 @@ int id=0;
             },
             bloc: blocCategory,
           ),
+          Divider(),
           BlocBuilder(
             builder: (_, StateBloc state) {
               if (state is LoadSuccess) {
                 ModelCategory model = state.data;
+
                 return TabBar(
                     controller: _tabController2,
                     onTap: (value) {
                       print(value);
                       tabCon=value;
+                      id=model.items![TabCha].children![tabCon].id.toString();
+                      onRefresh();
                     },
                     labelPadding: EdgeInsets.symmetric(horizontal: 30),
                     isScrollable: true,
@@ -170,6 +211,7 @@ int id=0;
             },
             bloc: blocCategory,
           ),
+          Divider(),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Row(
@@ -192,6 +234,8 @@ int id=0;
                                     InkWell(
                                         onTap: () {
                                           type = 'Bán chạy nhất';
+                                          soft='1';
+                                          onRefresh();
                                           Navigator.pop(context);
                                           setState(() {});
                                         },
@@ -209,6 +253,8 @@ int id=0;
                                     InkWell(
                                         onTap: () {
                                           type = 'Hàng mới về';
+                                          soft='2';
+                                          onRefresh();
                                           Navigator.pop(context);
                                           setState(() {});
                                         },
@@ -226,6 +272,8 @@ int id=0;
                                     InkWell(
                                         onTap: () {
                                           type = 'Giá cao đến thấp';
+                                          soft='-price';
+                                          onRefresh();
                                           Navigator.pop(context);
                                           setState(() {});
                                         },
@@ -243,6 +291,8 @@ int id=0;
                                     InkWell(
                                         onTap: () {
                                           type = 'Giá thấp đến cao';
+                                          soft='+price';
+                                          onRefresh();
                                           Navigator.pop(context);
                                           setState(() {});
                                         },
@@ -260,6 +310,8 @@ int id=0;
                                     InkWell(
                                         onTap: () {
                                           type = 'Giảm giá';
+                                          soft='3';
+                                          onRefresh();
                                           Navigator.pop(context);
                                           setState(() {});
                                         },
@@ -293,26 +345,74 @@ int id=0;
               ],
             ),
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: GridView.builder(
-                padding: EdgeInsets.all(10),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    mainAxisExtent: MediaQuery.of(context).size.height * 0.32),
-                itemBuilder: (context, index) {
-                  // return ProductItem(borderW: 2,);
-                  return SizedBox();
-                },
-                itemCount: 10,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-              ),
-            ),
-          ),
+          BlocBuilder(
+            builder: (_, StateBloc state) {
+              final length =
+              state is LoadSuccess ? state.checkLength : false;
+              final hasMore =
+              state is LoadSuccess ? state.hasMore : false;
+              final list = state is LoadSuccess
+                  ? state.data as List<ModelSanPhamMain>
+                  : <ModelSanPhamMain>[];
+              return ItemLoadPage(
+                  state: state,
+                  onTapErr: () {
+                    onRefresh();
+                  },
+                  success: Expanded(
+                    child: SingleChildScrollView(
+                      controller: _controller,
+                      child: Column(
+                        children: [
+                   GridView.builder(
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 10,
+                                crossAxisSpacing: 10,
+                                mainAxisExtent:
+                                MediaQuery.of(context).size.height * 0.32),
+                            itemBuilder: (context, index) {
+                              return ProductItem(modelSanPhamMain: list[index],);
+                            },
+                            itemCount: list.length,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                          ),
+                          ItemLoadMore(
+                            hasMore: hasMore,
+                            length: length,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+
+
+              );
+            },
+            bloc: blocFullPrd,
+          )
+          // Expanded(
+          //   child: SingleChildScrollView(
+          //     padding: EdgeInsets.symmetric(vertical: 10),
+          //     child: GridView.builder(
+          //       padding: EdgeInsets.all(10),
+          //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          //           crossAxisCount: 2,
+          //           mainAxisSpacing: 10,
+          //           crossAxisSpacing: 10,
+          //           mainAxisExtent: MediaQuery.of(context).size.height * 0.32),
+          //       itemBuilder: (context, index) {
+          //         // return ProductItem(borderW: 2,);
+          //         return SizedBox();
+          //       },
+          //       itemCount: 10,
+          //       shrinkWrap: true,
+          //       physics: NeverScrollableScrollPhysics(),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

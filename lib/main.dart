@@ -22,11 +22,11 @@ void main()async {
   await SharedPrefs.init();
   Bloc.observer = CounterObserver();
   runApp(
-    // MyApp(),
-      DevicePreview(
-        enabled: !kReleaseMode,
-        builder: (context) => MyApp(), // Wrap your app
-      ),
+    MyApp(),
+    //   DevicePreview(
+    //     enabled: !kReleaseMode,
+    //     builder: (context) => MyApp(), // Wrap your app
+    //   ),
       );
 }
 

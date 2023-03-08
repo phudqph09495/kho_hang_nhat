@@ -8,6 +8,8 @@ class LoadMoreEvent extends EventBloc {
   String? id;
   int limit, page;
   bool cleanList, loadMore;
+  String? sort;
+
 
   LoadMoreEvent({
     this.id='',
@@ -15,11 +17,14 @@ class LoadMoreEvent extends EventBloc {
     this.limit=0,
     this.page = 1,
     this.loadMore = false,
+    this.sort
 
   });
 }
 
+
 class GetData extends EventBloc {
+
   int limit, page;
   bool cleanList, loadMore;
   String param;

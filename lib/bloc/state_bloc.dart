@@ -27,8 +27,9 @@ String? token;
 
 class LoadFail extends StateBloc {
   final String error;
-
+  dynamic data;
   LoadFail({
+    this.data,
     required this.error,
   });
 }
