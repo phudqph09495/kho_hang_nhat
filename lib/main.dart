@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:kho_hang_nhat/bloc/cart/bloc_cart.dart';
+import 'package:kho_hang_nhat/bloc/cart/event_bloc2.dart';
 import 'package:kho_hang_nhat/screen/home.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:provider/provider.dart';
@@ -39,6 +41,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         BlocProvider(create: (_) => BlocCheckLogin()..add(GetData())),
+        BlocProvider(create: (_) => BlocCartLocal()..add(GetCart())),
         // In this sample app, CatalogModel never changes, so a simple Provider
         // is sufficient.
         Provider(create: (context) => CatalogModel()),

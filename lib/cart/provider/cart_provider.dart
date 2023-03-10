@@ -16,7 +16,7 @@ class CartProvider extends ChangeNotifier {
         unitPrice: _productElement.price,
         productName: _productElement.name,
         quantity: funcQuantity == 0 ? 1 : funcQuantity,
-        productDetailsObject: _productElement);
+        productDetailsObject: _productElement.name2 );
     notifyListeners();
   }
 

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kho_hang_nhat/bloc/cart/event_bloc2.dart';
+import 'package:kho_hang_nhat/model/model_productMain.dart';
 import 'package:kho_hang_nhat/widget/item/input/text_filed.dart';
 
+import '../bloc/cart/bloc_cart.dart';
 import '../bloc/event_bloc.dart';
 import '../bloc/state_bloc.dart';
 
@@ -29,6 +32,11 @@ class AppBarCustom extends StatefulWidget implements PreferredSizeWidget {
 
 class _AppBarCustomState extends State<AppBarCustom> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<BlocCartLocal>().add(GetCart());
+  }
   Widget build(BuildContext context) {
     return PreferredSize(
         preferredSize:
@@ -84,8 +92,18 @@ class _AppBarCustomState extends State<AppBarCustom> {
                Positioned(bottom: -3,right: 0,child: Container(
                  decoration: BoxDecoration(shape: BoxShape.circle,color: Colors.white),
                  child: Padding(
-                   padding: const EdgeInsets.all(4.0),
-                   child: Text('0',style: StyleApp.textStyle500(color: Colors.red,fontSize: 12),),
+                   padding:  EdgeInsets.all(4.0),
+                   child: BlocBuilder<BlocCartLocal,StateBloc>(
+                     builder: (context,StateBloc state){
+                       List<ModelSanPhamMain> list=state is LoadSuccess?state.data:[];
+                       List<String> idList=[];
+                       for(var item in list ){
+                         idList.add(item.id??'');
+                       }
+                       List<String> duplicateElements = idList.toSet().toList();
+                       return Text(duplicateElements.length.toString()??'0',style: StyleApp.textStyle500(color: Colors.red,fontSize: 12));
+                     },
+                   ),
                  ),
                ))
              ],

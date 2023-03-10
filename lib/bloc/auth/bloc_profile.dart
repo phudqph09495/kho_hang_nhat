@@ -38,6 +38,15 @@ class BlocProfile extends Bloc<EventBloc, StateBloc> {
 
           yield LoadFail(error: res['errors'] ?? "Lỗi kết nối");
         }
+        else if (res['status'] == 401) {
+
+          yield LoadFail(error: res['errors'] ?? "Lỗi kết nối");
+        }
+
+
+
+
+
       } on DioError catch (e) {
         yield LoadFail(error: e.error.error);
       } catch (e) {

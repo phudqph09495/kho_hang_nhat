@@ -24,7 +24,6 @@ class BlocTinh extends Bloc<EventBloc, StateBloc> {
 
         var res = await Api.getAsync(endPoint: ApiPath.tinh,isToken: false);
 
-        print(res);
         // yield LoadSuccess(
         // );
         if (res['status'] == 1){

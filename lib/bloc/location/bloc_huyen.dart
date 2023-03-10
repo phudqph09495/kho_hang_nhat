@@ -18,13 +18,12 @@ class BlocHuyen extends Bloc<EventBloc, StateBloc> {
 
   @override
   Stream<StateBloc> mapEventToState(EventBloc event) async* {
-    if (event is GetData) {
+    if (event is GetData2) {
       yield Loading();
       try {
 
         var res = await Api.getAsync(endPoint: ApiPath.huyen+'?region_id='+event.param,isToken: false);
 
-        print(res);
         // yield LoadSuccess(
         // );
         if (res['status'] == 1){
