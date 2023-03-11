@@ -36,7 +36,12 @@ final dio = Dio()
           err = ModelApiError(
               code: e.response?.statusCode,
               error: "Sever đang quá tải, vui lòng quay lại sau");
-        } else if (e.response?.statusCode == 404) {
+        }
+        else if (e.response?.statusCode == 401) {
+          err = ModelApiError(
+              code: e.response?.statusCode,
+              error: "Bạn phải đăng nhập để xem thông báo");
+        }else if (e.response?.statusCode == 404) {
           err = ModelApiError(
               code: e.response?.statusCode, error: "Không tìm thấy tài nguyên");
         } else if (e.response?.statusCode == 500) {
