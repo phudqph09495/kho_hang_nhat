@@ -88,5 +88,17 @@ class BlocCartLocal extends Bloc<EventBloc2, StateBloc> {
         data: objects,
       );
     }
+    if(event is ClearAll){
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String jsonString = await prefs.getString('cart') ?? '';
+      print(jsonString);
+      List<ModelSanPhamMain> objects = jsonString != "[]"
+          ? List<ModelSanPhamMain>.from(
+          jsonDecode(jsonString).map((x) => ModelSanPhamMain.fromJson(x)))
+          : [];
+      objects.clear();
+      jsonString = jsonEncode(objects);
+      prefs.setString('cart', jsonString);
+    }
   }
 }

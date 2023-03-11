@@ -39,6 +39,11 @@ class GetData2 extends EventBloc {
   String param;
   GetData2({this.param = ''});
 }
+class PhiVC extends EventBloc {
+  String region;
+  String district;
+  PhiVC({this.region = '',this.district=''});
+}
 
 class LoginApp extends EventBloc {
   String id;

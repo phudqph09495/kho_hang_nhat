@@ -13,5 +13,5 @@ static const productAll='/categories/products';
 static const infoPro='/product/detail?product_id=';
 static const relatePrd='/product/related?id=';
 static const category='/categories';
-
+static const phiVanCHuyen='/order/shipFee';
   }
