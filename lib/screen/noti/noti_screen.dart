@@ -71,6 +71,7 @@ class _NotiScreenState extends State<NotiScreen> {
             style: StyleApp.textStyle500(color: Colors.white, fontSize: 18),
           ))),
       body: SingleChildScrollView(
+        controller: _controller,
         child: Column(
           children: [
             SizedBox(

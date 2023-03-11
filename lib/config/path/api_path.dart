@@ -1,6 +1,7 @@
 class ApiPath {
   static const login="/user/login";
   static const profile="/user/info";
+  static const lichSu='/order?per_page=10&page=';
   static const tinh="/location/region";
   static const huyen="/location/district";
 

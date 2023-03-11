@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:kho_hang_nhat/model/model_lichSu.dart';
+import 'package:kho_hang_nhat/widget/item/load_image.dart';
 
 import '../../styles/init_style.dart';
 import '../home.dart';
 
 class InfoLichSU extends StatefulWidget {
-  const InfoLichSU({Key? key}) : super(key: key);
+LichSu lichSu;
+InfoLichSU({required this.lichSu});
 
   @override
   State<InfoLichSU> createState() => _InfoLichSUState();
 }
 
 class _InfoLichSUState extends State<InfoLichSU> {
-  int checkedVC = 0;
+  int checkedVC =0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkedVC=widget.lichSu.shippingMethod=='SHOP_SHIP'?0:1;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,10 +55,10 @@ class _InfoLichSUState extends State<InfoLichSU> {
                     ),
                   ),
                   Container(
-                      width: MediaQuery.of(context).size.width * 0.6,
+                      width: MediaQuery.of(context).size.width * 0.7,
                       child: Center(
                         child: Text(
-                          'Đơn hàng: KH0142578111',
+                          'Đơn hàng: ${widget.lichSu.code}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: StyleApp.textStyle500(
@@ -108,11 +117,11 @@ class _InfoLichSUState extends State<InfoLichSU> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '0387270088 | 0387270088',
+                            '${widget.lichSu.deliveryInfo!.name} | ${widget.lichSu.deliveryInfo!.phone}',
                             style: StyleApp.textStyle500(color: Colors.black54),
                           ),
                           Text(
-                            'asfa shfuash fuhasufhu ashfu ahfu iasdhbf uihsdu  ifhsduif asdfh asdasdfas ifjasofh',
+                            '${widget.lichSu.deliveryInfo!.location!.address} - ${widget.lichSu.deliveryInfo!.location!.district!.name} - ${widget.lichSu.deliveryInfo!.location!.region!.name}',
                             style: StyleApp.textStyle500(color: Colors.black54),
                           )
                         ],
@@ -186,11 +195,11 @@ class _InfoLichSUState extends State<InfoLichSU> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image.asset(
-                              'assets/images/exp.jpg',
+                            LoadImage(
+                              url:'${widget.lichSu.products![index].imageMainUrl}',
                               height:
                               MediaQuery.of(context).size.width * 0.235,
-                              fit: BoxFit.fitHeight,
+                              fit: BoxFit.fitWidth,
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,14 +211,14 @@ class _InfoLichSUState extends State<InfoLichSU> {
                                     width: MediaQuery.of(context).size.width *
                                         0.57,
                                     child: Text(
-                                      'Combo 3 chai sữa tắm Arau Baby túi (400ml x m)',
+                                      '${widget.lichSu.products![index].name}',
                                       style: StyleApp.textStyle700(),
                                     )),
                                 SizedBox(
                                   height: 10,
                                 ),
                                 Text(
-                                  '299.000đ',
+                                  '${widget.lichSu.products![index].price}',
                                   style: StyleApp.textStyle700(
                                       color: ColorApp.red, fontSize: 16),
                                 ),
@@ -223,7 +232,7 @@ class _InfoLichSUState extends State<InfoLichSU> {
                                       style: StyleApp.textStyle700(
                                           color: ColorApp.black00, fontSize: 14),
                                     ), Text(
-                                      '1',
+                                      '${widget.lichSu.products![index].qty}',
                                       style: StyleApp.textStyle700(
                                           color: ColorApp.red, fontSize: 14),
                                     ),
@@ -239,7 +248,7 @@ class _InfoLichSUState extends State<InfoLichSU> {
                   );
                 },
                 shrinkWrap: true,
-                itemCount: 2,
+                itemCount: widget.lichSu.products!.length,
                 physics: NeverScrollableScrollPhysics(),
               ),
               SizedBox(
@@ -248,7 +257,7 @@ class _InfoLichSUState extends State<InfoLichSU> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
 
                 Text('Tổng',style: StyleApp.textStyle400(),),
-                Text('2.730.000đ',style: StyleApp.textStyle700(color: ColorApp.red),),
+                Text('${widget.lichSu.subtotal}',style: StyleApp.textStyle700(color: ColorApp.red),),
               ],),
               Divider(),
               SizedBox(
@@ -257,7 +266,7 @@ class _InfoLichSUState extends State<InfoLichSU> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
 
                 Text('Phí vận chuyển',style: StyleApp.textStyle400(),),
-                Text('2.730.000đ',style: StyleApp.textStyle700(color: ColorApp.red),),
+                Text('${widget.lichSu.shippingFee}',style: StyleApp.textStyle700(color: ColorApp.red),),
               ],),
               Divider(),
               SizedBox(
@@ -266,7 +275,7 @@ class _InfoLichSUState extends State<InfoLichSU> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
 
                 Text('Giảm giá',style: StyleApp.textStyle400(),),
-                Text('2.730.000đ',style: StyleApp.textStyle700(color: ColorApp.red),),
+                Text('${widget.lichSu.promotionDiscount}',style: StyleApp.textStyle700(color: ColorApp.red),),
               ],),
               Divider(),
               SizedBox(
@@ -275,7 +284,7 @@ class _InfoLichSUState extends State<InfoLichSU> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
 
                 Text('Thành tiền',style: StyleApp.textStyle400(),),
-                Text('2.730.000đ',style: StyleApp.textStyle700(color: ColorApp.red),),
+                Text('${widget.lichSu!.total}',style: StyleApp.textStyle700(color: ColorApp.red),),
               ],),
               Divider(),
               SizedBox(
@@ -284,7 +293,7 @@ class _InfoLichSUState extends State<InfoLichSU> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
 
                 Text('Hình thức thanh toán',style: StyleApp.textStyle400(),),
-                Text('Thanh toán chuyển khoản',style: StyleApp.textStyle700(color: ColorApp.red),),
+                Text('${widget.lichSu.paymentMethod}',style: StyleApp.textStyle700(color: ColorApp.red),),
               ],),
               Divider(),
               SizedBox(
@@ -293,7 +302,7 @@ class _InfoLichSUState extends State<InfoLichSU> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
 
                 Text('Ngày tạo',style: StyleApp.textStyle400(),),
-                Text('2022-08-08 11:25:30',style: StyleApp.textStyle700(color: ColorApp.red),),
+                Text('${widget.lichSu.createdAt}',style: StyleApp.textStyle700(color: ColorApp.red),),
               ],),
               Divider(),
               SizedBox(
@@ -302,7 +311,7 @@ class _InfoLichSUState extends State<InfoLichSU> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
 
                 Text('Trạng thái',style: StyleApp.textStyle400(),),
-                Text('Huỷ bỏ',style: StyleApp.textStyle700(color: ColorApp.red),),
+                Text('${widget.lichSu.statusText}',style: StyleApp.textStyle700(color: ColorApp.red),),
               ],),
               Divider(),
             ],
