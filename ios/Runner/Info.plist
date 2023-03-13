@@ -28,6 +28,8 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>The app needs image permissions to upload profile pictures.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
