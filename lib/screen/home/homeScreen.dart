@@ -7,6 +7,7 @@ import 'package:kho_hang_nhat/model/model_config.dart';
 import 'package:kho_hang_nhat/model/model_flash.dart';
 import 'package:kho_hang_nhat/model/model_productMain.dart';
 import 'package:kho_hang_nhat/screen/home/product_screen.dart';
+import 'package:kho_hang_nhat/screen/home/search_screen.dart';
 import 'package:kho_hang_nhat/widget/item/load_image.dart';
 import 'package:kho_hang_nhat/widget/loadPage/item_load_page.dart';
 
@@ -39,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   BlocProductMain blocProductMain = BlocProductMain();
   ScrollController _controller = ScrollController();
   int page = 1;
+  ModelConfig modelConFig=ModelConfig();
   Future<void> onRefresh() async {
     page = 1;
     blocProductMain.add(LoadMoreEvent(
@@ -78,10 +80,14 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         scaffoldKey: _scaffoldKey,
         tittle: InputText1(
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen()));
+          },
           label: 'Tìm kiếm',
           readOnly: true,
           hasLeading: true,
           iconPreFix: InkWell(
+
             child: Icon(
               Icons.search,
               color: Colors.red,
@@ -100,9 +106,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   BlocBuilder(
                     builder: (_, StateBloc state) {
                       if (state is LoadSuccess) {
-                        ModelConfig modelConFig = state.data;
-                        blocFlashSale.add(
-                            GetData(param: '${modelConFig.flashSale!.id}'));
+                         modelConFig = state.data;
+                        modelConFig.flashSale!=null?     blocFlashSale.add(
+                            GetData(param: '${modelConFig.flashSale!.id}')):null;
                         return Column(
                           children: [
                             ImageSlideshow(
@@ -121,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               isLoop: true,
                               autoPlayInterval: 2000,
                             ),
-                            Padding(
+                            modelConFig.flashSale!=null?         Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -157,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ],
                               ),
-                            ),
+                            ):SizedBox(),
                           ],
                         );
                       }
@@ -174,10 +180,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         builder: (_, StateBloc state) {
                           if (state is LoadSuccess) {
                             ModelConfig modelConFig = state.data;
-                            return ItemCountDown(
+                            return modelConFig.flashSale!=null? ItemCountDown(
                                 time: DateTime.parse(
                                         '${modelConFig.flashSale!.dateTo}')
-                                    .millisecondsSinceEpoch);
+                                    .millisecondsSinceEpoch):SizedBox();
                           }
                           return ItemCountDown(
                             time: DateTime.now().millisecondsSinceEpoch +
@@ -192,13 +198,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       SizedBox(),
                     ],
                   ),
-                  Container(
-                    height: MediaQuery.of(context).size.width * 0.5 + 11,
-                    child: BlocBuilder(
-                      builder: (_, StateBloc state) {
-                        if (state is LoadSuccess) {
-                          ModelFlash modelFlash = state.data;
-                          return ListView.builder(
+                  BlocBuilder(
+                    builder: (_, StateBloc state) {
+                      if (state is LoadSuccess) {
+                        ModelFlash modelFlash = state.data;
+                        return Container(
+                          height: MediaQuery.of(context).size.width * 0.5 + 11,
+                          child: ListView.builder(
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () {
@@ -379,28 +385,34 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemCount: modelFlash.items!.length,
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
-                          );
-                        }
-                        return ListView.builder(
-                          itemBuilder: (context, index) {
-                            return Padding(
-                                padding: EdgeInsets.all(
-                                    MediaQuery.of(context).size.width * 0.01),
-                                child: Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.3,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.white),
-                                      color: Colors.white),
-                                ));
-                          },
-                          itemCount: 3,
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
+                          ),
                         );
-                      },
-                      bloc: blocFlashSale,
-                    ),
+                      }
+                      if (state is Loading)    {
+                        return Container(
+                          height: MediaQuery.of(context).size.width * 0.5 + 11,
+                          child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                  padding: EdgeInsets.all(
+                                      MediaQuery.of(context).size.width * 0.01),
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.3,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.white),
+                                        color: Colors.white),
+                                  ));
+                            },
+                            itemCount: 3,
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                          ),
+                        );
+                      }
+                      return SizedBox();
+                    },
+                    bloc: blocFlashSale,
                   ),
                 ],
               ),

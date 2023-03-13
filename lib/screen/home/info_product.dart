@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:kho_hang_nhat/screen/home/whithlist_screen.dart';
@@ -10,10 +11,13 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../bloc/cart/bloc_cart.dart';
 import '../../bloc/cart/event_bloc2.dart';
+import '../../bloc/config/bloc_config.dart';
 import '../../bloc/event_bloc.dart';
 import '../../bloc/product/bloc_infoPrd.dart';
+import '../../bloc/product/bloc_like.dart';
 import '../../bloc/product/bloc_prdRelate.dart';
 import '../../bloc/state_bloc.dart';
+import '../../model/model_config.dart';
 import '../../model/model_flash.dart';
 import '../../model/model_productMain.dart';
 import '../../styles/init_style.dart';
@@ -39,7 +43,16 @@ class _InfoProductScreenState extends State<InfoProductScreen>
   BlocRelatePrd blocRelatePrd = BlocRelatePrd();
   int tab = 0;
   BlocCartLocal blocCartLocal = BlocCartLocal();
+  BlocConfig blocConfig = BlocConfig()..add(GetData());
   ModelSanPhamMain model = ModelSanPhamMain();
+  BlocLike blocLike=BlocLike();
+  _launchURL(url) async {
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Đã có lỗi , vui lòng quay lại sau';
+    }
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -160,6 +173,7 @@ class _InfoProductScreenState extends State<InfoProductScreen>
               builder: (_, StateBloc state) {
                 if (state is LoadSuccess) {
                   model = state.data;
+                  colorFav=model.isLiked! ?ColorApp.red:Colors.grey;
                   int sum = 0;
                   double star = 0;
                   if (model.rate!.length > 0) {
@@ -211,26 +225,42 @@ class _InfoProductScreenState extends State<InfoProductScreen>
                                       ),
                                     )),
                               ),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    colorFav = ColorApp.red;
-                                  });
+                              BlocListener(bloc:blocLike,
+                                listener: (_,StateBloc state) {
+                                if(state is LoadSuccess){
+                                  bloc_infoPrd.add(GetData(param: '${widget.id}'));
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text('Đã thêm vào danh sách yêu thích'),
+                                      ],
+                                    ),
+                                    backgroundColor: Colors.green,
+                                    padding: EdgeInsets.zero,
+                                  ));
+                                }
                                 },
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(50)),
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(3),
-                                        child: Icon(
-                                          Icons.favorite_outline,
-                                          color: colorFav,
+                                child: InkWell(
+                                  onTap: () {
+                                    blocLike.add(GetData(param: widget.id));
+
+                                  },
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(50)),
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
                                         ),
-                                      )),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(3),
+                                          child: Icon(
+                                            Icons.favorite_outline,
+                                            color: colorFav,
+                                          ),
+                                        )),
+                                  ),
                                 ),
                               ),
                             ],
@@ -376,11 +406,27 @@ class _InfoProductScreenState extends State<InfoProductScreen>
                       tab == 0
                           ? Html(
                               data: '${model.description}',
-                              // onLinkTap:(url, context, attributes, element) {
-                              //
-                              //   print(attributes['href']);
-                              //
-                              // },
+                        customImageRenders: {
+
+                          networkSourceMatcher(domains: ["https://khohangnhat.vn"]):
+                          networkImageRender(
+                            altWidget: (alt) => Text(alt ?? ""),
+                            loadingWidget: () => Text("Loading..."),
+                          ),
+                              (attr, _) =>
+                          attr["src"] != null &&
+                              attr["src"]!.startsWith("/media"):
+                          networkImageRender(
+                              mapUrl: (url) => "https://khohangnhat.vn" + url!),
+                          // Custom placeholder image for broken links
+                          networkSourceMatcher():
+                          networkImageRender(altWidget: (_) => FlutterLogo()),
+                        },
+
+                        onLinkTap:(url, context, attributes, element) {
+                                _launchURL(attributes['href']);
+
+                              },
                             )
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -609,28 +655,101 @@ class _InfoProductScreenState extends State<InfoProductScreen>
       ),
       bottomSheet: Row(
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width / 3,
-            decoration: BoxDecoration(border: Border.all(color: ColorApp.red)),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  FaIcon(
-                    FontAwesomeIcons.commentDots,
-                    color: ColorApp.red,
+          BlocBuilder(builder: (_,StateBloc state) {
+            if( state is LoadSuccess){
+              ModelConfig model=state.data;
+              return  Container(
+                width: MediaQuery.of(context).size.width / 3,
+                child: SpeedDial(
+                  iconTheme: IconThemeData(color: Colors.red),
+                  activeIcon: Icons.close,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      SizedBox(),
+                      Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 2),
+                            child: FaIcon(
+                              FontAwesomeIcons.commentDots,
+                              size: 20,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Text(
+                            'CHAT',
+                            style: StyleApp.textStyle400(fontSize: 12),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
-                  Text(
-                    'CHAT NGAY',
-                    style: StyleApp.textStyle600(color: ColorApp.red),
-                  )
-                ],
-              ),
-            ),
-          ),
+                  backgroundColor: Colors.white,
+                  switchLabelPosition: true,
+                  elevation: 0,
+                  spaceBetweenChildren: 5,
+                  animationCurve: Curves.easeInOut,
+                  overlayColor: Colors.grey,
+                  overlayOpacity: 0.3,
+                  children: [
+                    SpeedDialChild(
+                        onTap: () {
+                          _launchURL(Uri.parse('https://www.zalo.me/0923220222'));
+                        },
+                        backgroundColor: Colors.white,
+                        labelBackgroundColor: Colors.black,
+                        labelStyle: TextStyle(fontSize: 15, color: Colors.white),
+                        child: Transform.scale(
+                            scale: 0.8,
+                            child: Image.asset(
+                              'assets/images/zalo.png',
+                              fit: BoxFit.fitHeight,
+                            )),
+                        label: 'Zalo'),
+                    SpeedDialChild(
+                        onTap: () {
+                          _launchURL(Uri.parse(
+                              '${model.fbMessengerUrl}'));
+                        },
+                        backgroundColor: Colors.white,
+                        labelBackgroundColor: Colors.black,
+                        labelStyle: TextStyle(fontSize: 15, color: Colors.white),
+                        child: FaIcon(
+                          FontAwesomeIcons.facebookMessenger,
+                          color: Colors.blue,
+                        ),
+                        label: 'Messenger'),
+                  ],
+                ),
+              );
+            }
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(),
+                Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 2),
+                      child: FaIcon(
+                        FontAwesomeIcons.commentDots,
+                        size: 20,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      'CHAT',
+                      style: StyleApp.textStyle400(fontSize: 12),
+                    ),
+                  ],
+                )
+              ],
+            );
+          },bloc: blocConfig,),
           InkWell(
             onTap: () {
+              blocCartLocal.add(AddData(modelSanPhamMain: model));
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => GioHangScreen()));
             },

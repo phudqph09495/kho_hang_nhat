@@ -15,27 +15,9 @@ class BlocCartLocal extends Bloc<EventBloc2, StateBloc> {
 
   @override
   Stream<StateBloc> mapEventToState(EventBloc2 event) async* {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     if (event is AddData) {
-      // list.add(event.modelSanPhamMain);
-
-      // if(list.isNotEmpty){
-      //   for (var i = 0; i < list.length; i++) {
-      //     if (list[i].id == event.modelSanPhamMain.id) {
-      //       print('a');
-      //       list[i].soLuong = list[i].soLuong! + 1;
-      //     }
-      //     else {
-      //       print('b');
-      //       list.add(event.modelSanPhamMain);
-      //     }
-      //   }
-      // }else{
-      //   list.add(event.modelSanPhamMain);
-      // }
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String jsonString = await prefs.getString('cart') ?? '[]';
-      print(jsonString);
+      String jsonString = prefs.getString('cart') ?? '[]';
       List<ModelSanPhamMain> list = jsonString != "[]"
           ? List<ModelSanPhamMain>.from(
               jsonDecode(jsonString).map((x) => ModelSanPhamMain.fromJson(x)))
@@ -46,26 +28,19 @@ class BlocCartLocal extends Bloc<EventBloc2, StateBloc> {
       yield LoadSuccess(data: list);
     }
     if (event is GetCart) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String jsonString = await prefs.getString('cart') ?? '';
-
-
-      List<ModelSanPhamMain> objects = jsonString != ''&&jsonString!='[]'
+      String jsonString = prefs.getString('cart') ?? '';
+      List<ModelSanPhamMain> objects = jsonString != '' && jsonString != '[]'
           ? List<ModelSanPhamMain>.from(
               jsonDecode(jsonString).map((x) => ModelSanPhamMain.fromJson(x)))
           : [];
-      int sum=0;
-      for(var item in objects){
-        sum+=int.parse(item.price??'');
+      int sum = 0;
+      for (var item in objects) {
+        sum += int.parse(item.price ?? '');
       }
-      yield LoadSuccess(
-        data: objects,
-        data2: sum
-      );
+      yield LoadSuccess(data: objects, data2: sum);
     }
     if (event is Reduce) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String jsonString = await prefs.getString('cart') ?? '';
+      String jsonString = prefs.getString('cart') ?? '';
       print(jsonString);
       List<ModelSanPhamMain> objects = jsonString != "[]"
           ? List<ModelSanPhamMain>.from(
@@ -76,8 +51,7 @@ class BlocCartLocal extends Bloc<EventBloc2, StateBloc> {
         idList.add(item.id ?? '');
       }
       for (var i = 0; i < objects.length; i++) {
-        if (idList[i]==(event.modelSanPhamMain.id)) {
-
+        if (idList[i] == (event.modelSanPhamMain.id)) {
           objects.removeAt(i);
           break;
         }
@@ -88,13 +62,12 @@ class BlocCartLocal extends Bloc<EventBloc2, StateBloc> {
         data: objects,
       );
     }
-    if(event is ClearAll){
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (event is ClearAll) {
       String jsonString = await prefs.getString('cart') ?? '';
       print(jsonString);
       List<ModelSanPhamMain> objects = jsonString != "[]"
           ? List<ModelSanPhamMain>.from(
-          jsonDecode(jsonString).map((x) => ModelSanPhamMain.fromJson(x)))
+              jsonDecode(jsonString).map((x) => ModelSanPhamMain.fromJson(x)))
           : [];
       objects.clear();
       jsonString = jsonEncode(objects);

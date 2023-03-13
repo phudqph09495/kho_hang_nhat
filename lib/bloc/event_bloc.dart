@@ -1,7 +1,7 @@
 abstract class EventBloc {}
 
 class LoadMoreEvent extends EventBloc {
-  String? id;
+  String id;
   int limit, page;
   bool cleanList, loadMore;
   String? sort;
@@ -39,10 +39,11 @@ class GetData2 extends EventBloc {
   String param;
   GetData2({this.param = ''});
 }
+
 class PhiVC extends EventBloc {
   String region;
   String district;
-  PhiVC({this.region = '',this.district=''});
+  PhiVC({this.region = '', this.district = ''});
 }
 
 class LoginApp extends EventBloc {
@@ -75,3 +76,41 @@ class DuyetDon extends EventBloc {
 }
 
 class CreateAccount extends EventBloc {}
+
+class Product extends EventBloc {
+  String? id;
+  int? qty;
+  Product({this.id, this.qty});
+}
+
+class Delivery_info extends EventBloc {
+  String? address;
+  String? region_id;
+  String? district_id;
+  String? name;
+  String? phone;
+  Delivery_info(
+      {this.name, this.address, this.phone, this.district_id, this.region_id});
+}
+
+class TaoOrder extends EventBloc {
+  List<Product> product;
+  String? payment_method;
+  String? promotion_code;
+  String? address;
+  String? region_id;
+  String? district_id;
+  String? name;
+  String? phone;
+  String? shipping_method;
+  TaoOrder(
+      {this.name,
+      this.address,
+      this.phone,
+      this.district_id,
+      this.region_id,
+      this.payment_method,
+      required this.product,
+        this.shipping_method,
+      this.promotion_code});
+}

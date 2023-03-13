@@ -5,10 +5,12 @@ class StyleApp {
   static TextStyle textStyle400(
       {Color color = Colors.black,
       double fontSize = 14,
+        FontStyle fontStyle=FontStyle.normal,
       TextDecoration decoration = TextDecoration.none}) {
     return GoogleFonts.roboto(
       color: color,
       fontSize: fontSize,
+      fontStyle: fontStyle,
       fontWeight: FontWeight.w400,
       decoration: decoration,
     );

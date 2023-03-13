@@ -28,8 +28,9 @@ class _ProductItemState extends State<ProductItem> {
           child: Column(
             children: [
               Stack(
-                alignment: Alignment.topLeft,
+
                 children: [
+
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -50,26 +51,50 @@ class _ProductItemState extends State<ProductItem> {
                       fit: BoxFit.fill,
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: ColorApp.red,
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(20),
-                            bottomRight: Radius.circular(20))),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-                      child: Text(
-                        (100- (double.parse('${widget.modelSanPhamMain.price}') *
-                            100 /
-                            double.parse(
-                                '${widget.modelSanPhamMain.priceBeforeDiscount}'))
-                            .round())
-                            .toString()+'%',
-                        style: StyleApp.textStyle500(
-                            color: Colors.white, fontSize: 14),
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: ColorApp.red,
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20),
+                              bottomRight: Radius.circular(20))),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+                        child: Text(
+                          (100- (double.parse('${widget.modelSanPhamMain.price}') *
+                              100 /
+                              double.parse(
+                                  '${widget.modelSanPhamMain.priceBeforeDiscount}'))
+                              .round())
+                              .toString()+'%',
+                          style: StyleApp.textStyle500(
+                              color: Colors.white, fontSize: 14),
+                        ),
                       ),
                     ),
                   ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: ColorApp.whiteF0,
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20),
+                              bottomRight: Radius.circular(20))),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+                        child: Text(
+                       widget.modelSanPhamMain.isStock=='1'?'Còn hàng':'Hết hàng',
+                          style: StyleApp.textStyle600(
+                              color: ColorApp.red, fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  ),
+
                 ],
               ),
               Expanded(

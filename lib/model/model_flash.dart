@@ -25,16 +25,16 @@ class ModelFlash {
 
 class Pagination {
   String? total;
-  int? perPage;
-  int? currentPage;
+  String? perPage;
+  String? currentPage;
   int? lastPage;
 
   Pagination({this.total, this.perPage, this.currentPage, this.lastPage});
 
   Pagination.fromJson(Map<String, dynamic> json) {
     total = json['total'];
-    perPage = json['per_page'];
-    currentPage = json['current_page'];
+    perPage = json['per_page'].toString();
+    currentPage = json['current_page'].toString();
     lastPage = json['last_page'];
   }
 

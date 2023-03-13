@@ -10,12 +10,11 @@ import '../../config/path/share_pref_path.dart';
 import '../../config/share_pref.dart';
 import '../../model/model_flash.dart';
 import '../../model/model_login.dart';
-import '../../model/model_productMain.dart';
 import '../event_bloc.dart';
 import '../state_bloc.dart';
 
-class Bloc_infoPrd extends Bloc<EventBloc, StateBloc> {
-  Bloc_infoPrd() : super(StateBloc());
+class BlocLike extends Bloc<EventBloc, StateBloc> {
+  BlocLike() : super(StateBloc());
 
   @override
   Stream<StateBloc> mapEventToState(EventBloc event) async* {
@@ -23,17 +22,17 @@ class Bloc_infoPrd extends Bloc<EventBloc, StateBloc> {
       yield Loading();
       try {
 
-        var res = await Api.getAsync(endPoint: ApiPath.infoPro+event.param,isToken: true);
+        var res = await Api.getAsync(endPoint: ApiPath.like+event.param,isToken: true);
 
 
 
         if (res['status'] == 1){
 
-          ModelSanPhamMain modelFlash=ModelSanPhamMain.fromJson(res['data']);
+
 
 
           yield LoadSuccess(
-              data: modelFlash
+
           );
         } else if (res['status'] == 0) {
 
