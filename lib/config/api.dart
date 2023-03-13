@@ -126,14 +126,15 @@ class Api {
     }
   }
 
-  static deleteAsync({required String endPoint, String? token}) async {
+  static deleteAsync({required String endPoint,}) async {
     try {
       Map<String, dynamic> headers = Map();
       headers['Content-Type'] = "application/json";
+      var token = await SharedPrefs.readString(SharePrefsKeys.user_token);
 
-      if (token != null) {
+
         headers['Authorization'] = "Bearer $token";
-      }
+
       var res = await dio.delete(
         Const.api_host + endPoint,
         options: Options(

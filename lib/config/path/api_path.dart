@@ -5,6 +5,7 @@ class ApiPath {
   static const tinh="/location/region";
   static const huyen="/location/district";
   static const updatePro="/user/update";
+  static const deleteAcc="/user/remove";
 
 
 
