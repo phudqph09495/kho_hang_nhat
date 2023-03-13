@@ -11,6 +11,7 @@ class ModelSanPhamMain {
   String? imageMainUrl;
   String? createdDate;
   bool? isHot;
+  String? link_web;
   List<String>? imageDetailUrls;
   String? soldCount;
   String? isStock;
@@ -32,6 +33,7 @@ class ModelSanPhamMain {
       this.soldCount,
       this.isStock,
 this.soLuong=1,
+        this.link_web,
       this.totalView,
       this.rate,
       this.isLiked});
@@ -46,7 +48,7 @@ this.soLuong=1,
     imageMainUrl = json['image_main_url'].toString();
     createdDate = json['created_date'].toString();
     isHot = json['is_hot'];
-
+link_web=json['link_web'];
     imageDetailUrls = json['image_detail_urls'].cast<String>();
     soldCount = json['sold_count'].toString();
     isStock = json['is_stock'].toString();

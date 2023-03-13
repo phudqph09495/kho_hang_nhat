@@ -26,7 +26,7 @@ import '../../widget/item/input/text_filed.dart';
 import '../../widget/item/load_image.dart';
 import '../home.dart';
 import '../item/product_item.dart';
-
+import 'package:share_plus/share_plus.dart';
 class InfoProductScreen extends StatefulWidget {
   String id;
   InfoProductScreen({required this.id});
@@ -210,20 +210,25 @@ class _InfoProductScreenState extends State<InfoProductScreen>
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Card(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50)),
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(3),
-                                      child: Icon(
-                                        Icons.share_outlined,
-                                        color: Colors.grey,
+                              InkWell(
+                                onTap: (){
+                                  Share.share('${model.name} ${model.link_web}');
+                                },
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50)),
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
                                       ),
-                                    )),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(3),
+                                        child: Icon(
+                                          Icons.share_outlined,
+                                          color: Colors.grey,
+                                        ),
+                                      )),
+                                ),
                               ),
                               BlocListener(bloc:blocLike,
                                 listener: (_,StateBloc state) {
@@ -234,6 +239,18 @@ class _InfoProductScreenState extends State<InfoProductScreen>
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text('Đã thêm vào danh sách yêu thích'),
+                                      ],
+                                    ),
+                                    backgroundColor: Colors.green,
+                                    padding: EdgeInsets.zero,
+                                  ));
+                                }
+                                if(state is LoadFail){
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text('${state.error}'),
                                       ],
                                     ),
                                     backgroundColor: Colors.green,

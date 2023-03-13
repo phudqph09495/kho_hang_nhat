@@ -43,7 +43,7 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
   late var timer;
   int phiVC = 0;
   int tong = 0;
-  BlocTinh blocTinh = BlocTinh();
+
   BlocProfile blocProfile = BlocProfile();
   TextEditingController name = TextEditingController();
   TextEditingController phone = TextEditingController();
@@ -51,10 +51,10 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
   TextEditingController promotion_code=TextEditingController();
   String huyenSS = '';
   ModelUser model = ModelUser();
-  List<Product> listPrd = [];
-  String idHuyenNN = '';
-  BlocHuyen blocHuyen = BlocHuyen();
+  BlocTinh blocTinh = BlocTinh();
 
+  BlocHuyen blocHuyen = BlocHuyen();
+  List<Product> listPrd = [];
   int sum = 0;
   BlocCartLocal blocCartLocal = BlocCartLocal();
   Bloc_infoPrd bloc = Bloc_infoPrd();

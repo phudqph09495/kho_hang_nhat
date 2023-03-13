@@ -4,6 +4,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kho_hang_nhat/bloc/noti/bloc_noti.dart';
 import 'package:kho_hang_nhat/model/model_noti.dart';
+import 'package:kho_hang_nhat/screen/noti/info_noti.dart';
 import 'package:kho_hang_nhat/widget/drawler.dart';
 
 import '../../bloc/event_bloc.dart';
@@ -141,71 +142,76 @@ class _NotiScreenState extends State<NotiScreen> {
                   return ListView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     itemBuilder: (context, index) {
-                      return Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey)),
-                        child: Padding(
-                          padding:
-                              EdgeInsets.only(left: 10, right: 10, top: 10),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Stack(
-                                alignment: Alignment.topRight,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(2.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: ColorApp.red,
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 7, horizontal: 7),
-                                        child: FaIcon(
-                                          FontAwesomeIcons.solidEnvelope,
-                                          color: Colors.white,
-                                          size: 15,
+                      return InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>InfoNotiScreen(notiFiCa: list[index])));
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey)),
+                          child: Padding(
+                            padding:
+                                EdgeInsets.only(left: 10, right: 10, top: 10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Stack(
+                                  alignment: Alignment.topRight,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(2.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: ColorApp.red,
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 7, horizontal: 7),
+                                          child: FaIcon(
+                                            FontAwesomeIcons.solidEnvelope,
+                                            color: Colors.white,
+                                            size: 15,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                    width: 12,
-                                    height: 12,
-                                    decoration: BoxDecoration(
-                                        color: ColorApp.red,
-                                        border: Border.all(color: Colors.white),
-                                        shape: BoxShape.circle),
-                                  )
-                                ],
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.7,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '  ${list[index].title}',
-                                      style: StyleApp.textStyle700(),
-                                    ),
-                                    Html(style: {
-                                      '#': Style(
-                                          maxLines: 1,
-                                          textOverflow: TextOverflow.ellipsis)
-                                    }, data: '${list[index].description}')
+                                    Container(
+                                      width: 12,
+                                      height: 12,
+                                      decoration: BoxDecoration(
+                                          color: ColorApp.red,
+                                          border: Border.all(color: Colors.white),
+                                          shape: BoxShape.circle),
+                                    )
                                   ],
                                 ),
-                              ),
-                              Icon(
-                                Icons.arrow_right_rounded,
-                                color: ColorApp.red,
-                              )
-                            ],
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.7,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '  ${list[index].title}',
+                                        style: StyleApp.textStyle700(),
+                                      ),
+                                      Html(style: {
+                                        '#': Style(
+                                            maxLines: 1,
+                                            textOverflow: TextOverflow.ellipsis)
+                                      }, data: '${list[index].description}')
+                                    ],
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_right_rounded,
+                                  color: ColorApp.red,
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       );

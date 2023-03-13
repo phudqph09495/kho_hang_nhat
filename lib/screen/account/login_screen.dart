@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kho_hang_nhat/bloc/check_log_state.dart';
 import 'package:kho_hang_nhat/bloc/event_bloc.dart';
 import 'package:kho_hang_nhat/model/model_login.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../bloc/auth/bloc_login.dart';
 import '../../bloc/state_bloc.dart';
@@ -23,6 +24,13 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController phone = TextEditingController();
   TextEditingController pass = TextEditingController();
+  _launchURL(url) async {
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Đã có lỗi , vui lòng quay lại sau';
+    }
+  }
   BlocLogin bloc = BlocLogin();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
@@ -61,8 +69,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         StyleApp.textStyle400(color: Colors.grey, fontSize: 16),
                     suffixIcon: InkWell(
                       onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => NhapSDT()));
+                        _launchURL(Uri.parse('https://khohangnhat.vn/customer/phoneverify.html?type=forgot_pass'));
+                        // Navigator.push(context,
+                        //     MaterialPageRoute(builder: (context) => NhapSDT()));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(13.0),
@@ -113,16 +122,21 @@ class _LoginScreenState extends State<LoginScreen> {
               )
             ],
           ),
-          Container(
-              height: MediaQuery.of(context).size.height * 0.05,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey), color: Colors.white),
-              child: Center(
-                  child: Text(
-                'Đăng ký',
-                style: StyleApp.textStyle700(fontSize: 18, color: ColorApp.red),
-              ))),
+          InkWell(
+            onTap: (){
+              _launchURL(Uri.parse('https://khohangnhat.vn/customer/phoneverify.html?type=register'));
+            },
+            child: Container(
+                height: MediaQuery.of(context).size.height * 0.05,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey), color: Colors.white),
+                child: Center(
+                    child: Text(
+                  'Đăng ký',
+                  style: StyleApp.textStyle700(fontSize: 18, color: ColorApp.red),
+                ))),
+          ),
         ],
       ),
     );

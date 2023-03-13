@@ -40,7 +40,7 @@ final dio = Dio()
         else if (e.response?.statusCode == 401) {
           err = ModelApiError(
               code: e.response?.statusCode,
-              error: "Bạn phải đăng nhập để xem thông báo");
+              error: "Bạn phải đăng nhập để xem");
         }else if (e.response?.statusCode == 404) {
           err = ModelApiError(
               code: e.response?.statusCode, error: "Không tìm thấy tài nguyên");

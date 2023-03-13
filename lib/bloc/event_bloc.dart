@@ -14,7 +14,15 @@ class LoadMoreEvent extends EventBloc {
       this.loadMore = false,
       this.sort});
 }
-
+class UpdateProfile extends EventBloc{
+String? name;
+String? email;
+String? phone;
+String? address;
+  String?  region;
+  String? district;
+  UpdateProfile({this.phone,this.name,this.email,this.address,this.district,this.region});
+}
 class GetData extends EventBloc {
   int limit, page;
   bool cleanList, loadMore;

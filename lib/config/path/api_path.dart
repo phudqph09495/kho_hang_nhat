@@ -4,6 +4,7 @@ class ApiPath {
   static const lichSu='/order?per_page=10&page=';
   static const tinh="/location/region";
   static const huyen="/location/district";
+  static const updatePro="/user/update";
 
 
 
@@ -18,6 +19,7 @@ static const phiVanCHuyen='/order/shipFee';
 static const order="/order/create";
 static const search="/product/search?keyword=";
   static const like='/product/like?product_id=';
+  static const likeList="/product/favorite";
 
 
 /// noti

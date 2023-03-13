@@ -5,11 +5,14 @@ import 'package:kho_hang_nhat/bloc/auth/bloc_profile.dart';
 import 'package:kho_hang_nhat/config/share_pref.dart';
 import 'package:kho_hang_nhat/screen/account/profile_screen.dart';
 import 'package:kho_hang_nhat/widget/drawler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../bloc/auth/bloc_checkLogin.dart';
+import '../../bloc/config/bloc_config.dart';
 import '../../bloc/event_bloc.dart';
 import '../../bloc/state_bloc.dart';
 import '../../config/path/share_pref_path.dart';
+import '../../model/model_config.dart';
 import '../../model/model_user.dart';
 import '../../styles/init_style.dart';
 import '../../widget/app_bar.dart';
@@ -28,7 +31,15 @@ class LoggedScreen extends StatefulWidget {
 class _LoggedScreenState extends State<LoggedScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   BlocProfile blocProfile = BlocProfile()..add(GetData());
+  _launchURL(url) async {
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Đã có lỗi , vui lòng quay lại sau';
+    }
+  }
 
+  BlocConfig blocConfig = BlocConfig()..add(GetData());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,34 +186,72 @@ class _LoggedScreenState extends State<LoggedScreen> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Container(
-                          decoration: BoxDecoration(border:Border(top: BorderSide(color: Colors.grey))),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(right: 25, left: 25, top: 10,bottom: 10),
-                                child: Row(
-                                  children: [
-                                    FaIcon(
-                                      FontAwesomeIcons.circleInfo,
-                                      color: ColorApp.red,
-                                    ),
-                                    SizedBox(
-                                      width: 15,
-                                    ),
-                                    Text(
-                                      'Về chúng tôi',
-                                      style: StyleApp.textStyle400(fontSize: 16),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
+                   BlocBuilder(bloc: blocConfig,builder: (_,StateBloc state){
+                     if(state is LoadSuccess){
+                       ModelConfig model=state.data;
+                             return    InkWell(
+                               onTap: (){
+                                 _launchURL(Uri.parse('${model.linkAboutUs}'));
+                               },
+                               child: Padding(
+                         padding: EdgeInsets.symmetric(horizontal: 10),
+                         child: Container(
+                           decoration: BoxDecoration(border:Border(top: BorderSide(color: Colors.grey))),
+                           child: Column(
+                               children: [
+                                 Padding(
+                                   padding: EdgeInsets.only(right: 25, left: 25, top: 10,bottom: 10),
+                                   child: Row(
+                                     children: [
+                                       FaIcon(
+                                         FontAwesomeIcons.circleInfo,
+                                         color: ColorApp.red,
+                                       ),
+                                       SizedBox(
+                                         width: 15,
+                                       ),
+                                       Text(
+                                         'Về chúng tôi',
+                                         style: StyleApp.textStyle400(fontSize: 16),
+                                       )
+                                     ],
+                                   ),
+                                 )
+                               ],
+                           ),
+                         ),
+                       ),
+                             );
+                     }
+                     return    Padding(
+                       padding: EdgeInsets.symmetric(horizontal: 10),
+                       child: Container(
+                         decoration: BoxDecoration(border:Border(top: BorderSide(color: Colors.grey))),
+                         child: Column(
+                           children: [
+                             Padding(
+                               padding: EdgeInsets.only(right: 25, left: 25, top: 10,bottom: 10),
+                               child: Row(
+                                 children: [
+                                   FaIcon(
+                                     FontAwesomeIcons.circleInfo,
+                                     color: ColorApp.red,
+                                   ),
+                                   SizedBox(
+                                     width: 15,
+                                   ),
+                                   Text(
+                                     'Về chúng tôi',
+                                     style: StyleApp.textStyle400(fontSize: 16),
+                                   )
+                                 ],
+                               ),
+                             )
+                           ],
+                         ),
+                       ),
+                     );
+                   }),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         child: Container(
